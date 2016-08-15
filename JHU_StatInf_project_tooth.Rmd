@@ -1,0 +1,325 @@
+---
+# A course project for the Statistical Inference Coursera class,
+# part of the Data Science Specialization offered
+# by Johns Hopkins University
+# NOTE: This document is copyrighted material. Please feel free
+# to use it for inspiration, but *please* do not plagiarize!
+# Completing coursework by copying other people's work is
+# a serious breach of academic etiquette - and also a betrayal
+# of yourself!
+# COMPILING: This document produces PDF output using knitr, pandoc,
+# and XeLaTeX. In order to compile, you need to have a working
+# TeX installation (i.e., MacTeX, TeXLive, MikTeX or some other),
+# including the TeX Gyre Termes font.
+title: "Effect of vitamin C on tooth cell growth"
+author: "Timo Voipio"
+date: "14 Aug 2016"
+output:
+    pdf_document:
+        latex_engine: xelatex
+        md_extensions: +raw_tex
+        includes:
+            in_header: toothheader.tex
+mainfont: "texgyretermes-regular.otf"
+mathfont: "texgyretermes-math.otf"
+classoption: a4paper
+---
+
+```{r echo=FALSE}
+library(knitr)
+
+# TRUE relegates most code chunks to appendices and disables result output
+# by default
+tidydoc <- TRUE
+
+# figure width 4 inches (PDF output), height = width/goldenratio, center
+# figures
+opts_chunk$set(fig.width=6, fig.height=6/1.618, fig.align='center')
+
+# Disable the LaTeX comment from the output of print.xtable,
+# enable booktabs style table output
+options(xtable.comment = FALSE, xtable.booktabs = TRUE)
+
+# Increase the penalty for using scientific notation (in order to
+# format Nperm as integer)
+options(scipen = 1)
+
+if (tidydoc)
+{
+    opts_chunk$set(results='hide', echo=FALSE, message=FALSE,
+                   size='scriptsize')
+}
+```
+
+```{r init}
+library(ggplot2)
+library(datasets)
+library(xtable)
+
+# Temporarily disable warnings while dplyr is loaded
+oldw <- getOption("warn")
+options(warn = -1)
+library(dplyr)
+options(warn = oldw)
+
+data("ToothGrowth")
+#tg <- ToothGrowth[, c("len", "supp", "dose")]
+
+# Set random seed for repeatability
+set.seed(160808)
+```
+
+# Overview
+
+This paper explores the `ToothGrowth` dataset from the R `datasets` package. Based on the data, we determine that larger dosages of vitamin C is associated with longer odontoblasts, and that for lower concentrations administering the vitamin via orange juice seems to be associated with longer odontoblasts, compared to ascorbic acid administration.
+
+# Data description
+
+The dataset is described in its documentation as follows: "The Effect of Vitamin C on Tooth Growth in Guinea Pigs. The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, (orange juice or ascorbic acid (a form of vitamin C and coded as VC)." Administration via orange juice is coded with "OJ". There are ten measurements of the response (odontoblast length) for each of the six possible combinations of dose and administration method. 
+
+# Exploratory analysis
+
+The measured odontoblast lengths are shown below as a function of the vitamin C dose. Administration method is indicated by marker color. The mean of each of the six dose--method groups is indicated with a cross, colored according to the method.
+
+```{r exploreplot}
+# Determine the mean odontoblast length for each combination of dose
+# and administration method
+tgmeans <- group_by(ToothGrowth, supp, dose) %>%
+    summarize(len = mean(len)) %>%
+    ungroup()
+# Ensure that the columns of tgmeans are in the same order as in tg
+tgmeans <- tgmeans[, names(ToothGrowth)]
+
+# Combine the measurement results and the computed means for plotting
+tgc <- rbind(ToothGrowth, tgmeans)
+
+# Add a factor variable to indicate whether the row is measured data
+# or a mean
+tgc <- cbind(tgc,
+             type = factor(c(rep("Measured", times = nrow(ToothGrowth)),
+                             rep("Mean", times = nrow(tgmeans)))))
+
+# Prepare a plot of length vs dose using ggplot2
+gt <- ggplot(tgc, aes(x = dose, y = len))
+```
+```{r exploreplot2}
+# Color markers by administration methods, choose marker size and type
+# based on whether showing mean or measured data
+gt <- gt + geom_point(aes(color = supp, size = type, shape = type)) + 
+    scale_size_manual(values = c("Measured" = 2, "Mean" = 6)) +
+    scale_shape_manual(name = "Type", values = c("Measured" = 16, "Mean" = 3)) +
+    scale_color_discrete(name = "Adm. method", breaks = c("OJ", "VC"),
+                         labels = c("Orange juice (OJ)", "Ascorbic acid (VC)")) +
+    guides(size = FALSE) +
+    labs(x = "Dose (mg/day)", y = "Odontoblast length (a.u.)", title = "Odontoblast length vs. dose\nand administration method") +
+    theme(text = element_text(family = "serif"))
+    
+print(gt)
+```
+
+We observe that the odontoblasts seem to be longer in those gerbils which had larger daily dose of vitamin C. For doses of 0.5 and 1.0 mg/day, also the administration method seems to have an effect, with the orange juice administration being associated with longer odontoblasts.
+
+# Hypothesis testing of the mean odontoblast length
+
+We investigate the differences in the mean lengths of different dose--method groups by using the two-sided *t*-test ($\alpha = 0.05$). In order to control false discovery rate, the p-values are adjusted using the Benjamini--Hochberg method, R function `p.adjust(p, method = "BH")`. Only the dose--method pairs where either the dose or the method are the same are considered, i.e., if both the dose and the administration method differ the difference of the means and the associated p-value is not calculated.
+
+The differences in the means are given in the table below. Gray cells correspond to pairs which are not considered. Cells with green background indicate that the difference in the means is statistically significant, while red background indicates the converse. The difference of the mean is given first, positive value indicates that the mean of the group named on the same row is larger than the mean of the group named at the top of the column. The number after the semicolon is the (unadjusted) p-value.
+
+```{r citable}
+# Create a data frame of the possible combinations of administration method
+# and dose, one combination per row
+# The leftmost variable variest fastest, the rightmost slowest
+metxdose <- expand.grid(supp = unique(tgc$supp), dose = unique(tgc$dose))
+
+# Set the significance level
+signif.level <- 0.05
+
+# Choose the p value adjustment method to control the false discovery
+# rate (using p.adjust())
+#adj.method <- "bonferroni"
+adj.method <- "BH"
+
+# Indices of the elements of a lower triangular matrix (main diagonal omitted)
+# Thanks to: http://stackoverflow.com/a/20898910
+# We want to consider each dose--method pair only once
+rows <- nrow(metxdose)
+rowinds <- rev(abs(sequence(seq.int(rows - 1)) - rows) + 1)
+colinds <- rep.int(seq.int(rows - 1), rev(seq.int(rows - 1)))
+idx <- cbind(rowinds, colinds)
+
+# Form a list of the index pairs; each element of the list identifies
+# a dose-method combination, i.e., a row in metxdose
+idxl <- lapply(seq_len(nrow(idx)), function(i) as.vector(idx[i,]))
+
+# Remove from consideration the indices which consider to pairs
+# where both the dose and the administration method differ
+onediffers <- sapply(idxl, function(x) any(metxdose[x[1], ]
+                                           == metxdose[x[2], ]))
+idxl <- idxl[onediffers]
+
+# Function to calculate the two-sided t-test between the identified
+# pair of dose-method combinations. The calculated difference is
+# data.r-data.c, where data.c is the combination corresponding to the
+# index on the column in the metxdose matrix and data.r corresponds to
+# the row.
+calculate_stat <- function(l)
+{
+    data.r <- ToothGrowth[ToothGrowth$supp == metxdose[l[1], "supp"] &
+                  ToothGrowth$dose == metxdose[l[1], "dose"], "len"]
+    data.c <- ToothGrowth[ToothGrowth$supp == metxdose[l[2], "supp"] &
+                  ToothGrowth$dose == metxdose[l[2], "dose"], "len"]
+    t.test(data.r, data.c, paired = FALSE, var.equal = FALSE)
+}
+
+# Perform the t tests for each element in idxl, and for convenience
+# separate the p values of the calculated differences of means
+# and the differences themselves into separate vectors
+t.test.results <- lapply(idxl, calculate_stat)
+p.values <- sapply(t.test.results, function(res) res$p.value)
+meandeltas <- sapply(t.test.results, function(res) -diff(res$estimate))
+names(meandeltas) <- NULL
+
+# Calculate the adjusted p values
+p.adj.values <- p.adjust(p.values, method = adj.method)
+
+# Create descriptive yet concise row and column names for use in the 
+# result matrix
+rowcolnames <- apply(metxdose, 1, paste, collapse = " ")
+
+# Construct empty matrices into which the calculated p values, adjusted
+# p values, mean deltas and whether the result is significant or not are placed
+# Since the matrix data is given as a 0-length vector, they are filled
+# with NAs.
+p.values.mat <- matrix(data = numeric(), nrow = rows, ncol = rows,
+                       dimnames = list(rowcolnames, rowcolnames))
+p.adj.values.mat <- p.values.mat
+meandeltas.mat <- p.values.mat
+p.signif.mat <- matrix(data = logical(), nrow = rows, ncol = rows,
+                       dimnames = list(rowcolnames, rowcolnames))
+
+# Populate the matrices created above
+for (i in seq_along(idxl))
+{
+    row <- idxl[[i]][1]
+    col <- idxl[[i]][2]
+    p.values.mat[row, col] <- p.values[i]
+    p.adj.values.mat[row, col] <- p.adj.values[i]
+    meandeltas.mat[row, col] <- meandeltas[i]
+    p.signif.mat[row, col] <- p.adj.values[i] < signif.level
+}
+rm(row, col)
+```
+```{r citable2, results="asis"}
+# Round the mean deltas to 3 digits; NAs are encoded as "NA"
+meandeltas.str <- format(meandeltas.mat, digits = 3)
+# Append a semicolon after (valid) numbers, do not append after NAs
+meandeltas.str <- gsub("(-?[[:digit:]]+\\.[[:digit:]]+)", "$\\1$;",
+                       meandeltas.str)
+# Replace "NA" cells with a LaTeX macro coloring that (now empty)
+# cell gray
+meandeltas.str <- gsub("^[[:blank:]]+NA$", "\\\\cellcolor[gray]{0.9}",
+                       meandeltas.str)
+
+# Round p values to 3 digits
+p.values.str <- format(p.values.mat, digits = 3)
+# Remove NA values
+p.values.str <- gsub("^[[:blank:]]+NA$", "", p.values.str)
+# Reformat scientific formatting to a nice, LaTeX format
+p.values.str <- gsub("(-?[[:digit:]]+\\.[[:digit:]]+)e(-)?\\+?0*([[:digit:]]+)$", "$\\1 \\\\times 10^{\\2\\3}$", p.values.str)
+
+# Create logical vectors identifying significant and non-significant
+# results
+signif.ind <- which(!is.na(p.values.mat) & p.signif.mat)
+not.signif.ind <- which(!is.na(p.values.mat) & !p.signif.mat)
+
+tablecell.str <- paste(meandeltas.str, p.values.str)
+
+tablecell.str[signif.ind] <- paste("\\cellcolor[RGB]{153,255,153}",
+                                  tablecell.str[signif.ind])
+tablecell.str[not.signif.ind] <- paste("\\cellcolor[RGB]{255,173,153}",
+                                      tablecell.str[not.signif.ind])
+
+tablecell.str <- matrix(tablecell.str, rows, rows,
+                        dimnames = list(rowcolnames, rowcolnames))
+tablecell.str <- tablecell.str[-1, -rows]
+print(xtable(tablecell.str, align = c("r", rep("c", rows-1))),
+      sanitize.text.function = identity, size = "small")
+```
+
+We observe that for both administration methods and all combinations of dose, the difference in the means is statistically significant. Additionally, for daily doses of 0.5 and 1.0 mg, the gerbils to whom the vitamin was administered via orange juice had, on average, longer odontoblast cells than those who were administered ascorbic acid. For the daily dose of 2.0 mg, the difference between the administration methods was not statistically significant.
+
+# Permutation testing
+
+```{r perminit}
+Nperm <- 10000
+doses <- unique(ToothGrowth$dose)
+```
+
+Finally, we evaluate the different administration methods via permutation testing at each dose level. For each `r length(doses)` dose levels, the administration method labels are reassigned at random `r Nperm` times, then the difference between the means of the reassigned groups is calculated and compared to the difference in the original data. The fraction of the permutations where the difference of means is greater than the actual sample mean serves as an estimate of the significance of the measured difference.
+
+The following table shows the result of the permutation testing. From the previous section our hypothesis is that orange juice (OJ) is associated with higher mean than ascorbic acid (VC), so for each permutation we have subtracted the mean of the data labeled `VC` from the mean of the data assigned the label `OJ`. The observed difference for each dose is given in the column $\hat{\Delta}$. The mean and standard deviation of the differences obtained by permuting the labels are given in the columns $\bar{\Delta}$ and $\sigma$, respectively. The rightmost column $\hat{\Delta} > \bar{\Delta}$ shows the fraction of the permutations which resulted in larger difference of means than present in the original data.
+
+```{r permtest}
+# Create a data frame for storing the results of the permutation tests
+perms <- data.frame(matrix(numeric(Nperm*length(doses)*2), ncol = 2))
+names(perms) <- c("deltamean", "dose")
+perms[, "greater"] <- logical()
+
+testStat <- function(x, suppgrp)
+{
+    mean(x[suppgrp == "OJ", "len"]) - mean(x[suppgrp == "VC", "len"])
+}
+
+obsdeltas <- numeric(3)
+    
+for (i in seq_along(doses))
+{
+    dosei <- doses[i]
+    tgdose <- subset(ToothGrowth, dose == dosei)
+
+    obsdeltas[i] <- testStat(tgdose, tgdose$supp)
+    
+    offset <- (i-1)*Nperm
+    perms[(offset + 1:Nperm), "deltamean"] <-
+        sapply(seq(Nperm), function(x) testStat(tgdose, sample(tgdose$supp)))
+    perms[(offset + 1:Nperm), "dose"] <- dosei
+    perms[(offset + 1:Nperm), "greater"] <-
+        perms[(offset + 1:Nperm), "deltamean"] > obsdeltas[i]
+}
+
+dosetab <- perms %>%
+    group_by(dose) %>%
+    summarize(meandelta = mean(deltamean), sddelta = sd(deltamean),
+              greater = mean(greater))
+dosetab <- cbind(dosetab, obsdelta = obsdeltas)
+dosetab <- select(dosetab, dose, obsdelta, everything())
+names(dosetab) <- c("Dose", "$\\hat{\\Delta}$", "$\\bar{\\Delta}$",
+                    "$\\sigma$", "$\\bar{\\Delta} > \\hat{\\Delta}$")
+```
+```{r permtable, results="asis"}
+print(xtable(dosetab, digits = c(1, 1, 2, 2, 2, 4)),
+      include.rownames = FALSE, sanitize.colnames.function = identity)
+```
+
+Small values of $\hat{\Delta} > \bar{\Delta}$ indicate that the difference in the means between the administration methods, as in the original data, is statistically significant. We see that for the two smaller doses the difference between the administration methods, is significant, but the largest dose approximately half of the label permutations result in a difference of means larger than in the original data.
+
+# Conclusions
+
+We conclude that, according to our analysis, larger doses of vitamin C are associated with longer odontoblasts. For daily doses of 0.5 mg and 1.0 mg, administering the vitamin via orange juice instead of as ascorbic acid is associated higher mean odontoblast length. These results are statistically significant ($\alpha < 0.05$); the Benjamini--Hochberg correction was used to control the false discovery rate. For the largest reported dose, 2.0 mg/day, the difference between the administration methods is not statistically significant. 
+
+# Appendix
+
+This appendix includes the R code used to conduct the simulation experiment and to format the results. The simulation was performed using `r sessionInfo()$R.version$version.string` on `r sessionInfo()$running` [`r sessionInfo()$platform`].
+
+## Source code
+
+The following shows the source code used in the analysis. Due to length constraints, some code sections related strictly to presenting the results have been omitted. Full R Markdown sourcecode is available in GitHub:
+
+```{r ref.label=c("init", "exploreplot"), echo=TRUE, results="hide", fig.show="hide"}
+```
+(code block omitted)
+```{r ref.label=c("citable"), echo=TRUE, results="hide", fig.show="hide"}
+```
+(code block omitted)
+```{r ref.label=c("perminit", "permtest", "permtable"), echo=TRUE, results="hide", fig.show="hide"}
+```
