@@ -1,21 +1,13 @@
 ---
-# A course project for the Statistical Inference Coursera class,
-# part of the Data Science Specialization offered
-# by Johns Hopkins University
 # NOTE: This document is copyrighted material. Please feel free
-# to use it for inspiration, but *please* do not plagiarize!
-# Completing coursework by copying other people's work is
-# a serious breach of academic etiquette - and also a betrayal
-# of yourself!
 # COMPILING: This document produces PDF output using knitr, pandoc,
-# and XeLaTeX. In order to compile, you need to have a working
-# TeX installation (i.e., MacTeX, TeXLive, MikTeX or some other),
-# including the TeX Gyre Termes font.
 title: "Simulated distribution of the mean of exponentially distributed random variables"
 author: "Timo Voipio"
 date: "11 Aug 2016"
 output:
     pdf_document:
+      includes:
+        in_header: simulationheader.tex
       latex_engine: xelatex
 mainfont: "texgyretermes-regular.otf"
 mathfont: "texgyretermes-math.otf"
@@ -189,6 +181,8 @@ This appendix includes the R code used to conduct the simulation experiment and 
 
 ```{r ref.label=c("init", "simulmean", "simdist", "distfig"), echo=TRUE, results="hide", fig.show="hide"}
 ```
+
+The complete R Markdown source file may be found at https://github.com/tvoipio/JHU_SIProject
 
 ## Simulation using $n = 1000000$
 

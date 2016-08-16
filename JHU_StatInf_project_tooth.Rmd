@@ -1,25 +1,14 @@
 ---
-# A course project for the Statistical Inference Coursera class,
-# part of the Data Science Specialization offered
-# by Johns Hopkins University
 # NOTE: This document is copyrighted material. Please feel free
-# to use it for inspiration, but *please* do not plagiarize!
-# Completing coursework by copying other people's work is
-# a serious breach of academic etiquette - and also a betrayal
-# of yourself!
 # COMPILING: This document produces PDF output using knitr, pandoc,
-# and XeLaTeX. In order to compile, you need to have a working
-# TeX installation (i.e., MacTeX, TeXLive, MikTeX or some other),
-# including the TeX Gyre Termes font.
 title: "Effect of vitamin C on tooth cell growth"
 author: "Timo Voipio"
 date: "14 Aug 2016"
 output:
     pdf_document:
-        latex_engine: xelatex
-        md_extensions: +raw_tex
-        includes:
-            in_header: toothheader.tex
+      includes:
+        in_header: toothheader.tex
+      latex_engine: xelatex
 mainfont: "texgyretermes-regular.otf"
 mathfont: "texgyretermes-math.otf"
 classoption: a4paper
@@ -71,19 +60,23 @@ set.seed(160808)
 
 # Overview
 
-This paper explores the `ToothGrowth` dataset from the R `datasets` package. Based on the data, we determine that larger dosages of vitamin C is associated with longer odontoblasts, and that for lower concentrations administering the vitamin via orange juice seems to be associated with longer odontoblasts, compared to ascorbic acid administration.
+This paper explores the `ToothGrowth` dataset from the R `datasets` package. Based on the data, we determine that larger dosages of vitamin C is associated with longer odontoblasts, and that for lower concentrations delivering the vitamin via orange juice seems to be associated with longer odontoblasts, compared to ascorbic acid.
 
 # Data description
 
-The dataset is described in its documentation as follows: "The Effect of Vitamin C on Tooth Growth in Guinea Pigs. The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, (orange juice or ascorbic acid (a form of vitamin C and coded as VC)." Administration via orange juice is coded with "OJ". There are ten measurements of the response (odontoblast length) for each of the six possible combinations of dose and administration method. 
+The dataset is described in its documentation as follows:
+
+> The Effect of Vitamin C on Tooth Growth in Guinea Pigs. The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1.0, and 2.0 mg/day) by one of two delivery methods, (orange juice or ascorbic acid (a form of vitamin C and coded as VC).
+
+Delivery via orange juice is coded with "OJ". There are ten measurements of the response (odontoblast length) for each of the six possible combinations of dose and delivery method. 
 
 # Exploratory analysis
 
-The measured odontoblast lengths are shown below as a function of the vitamin C dose. Administration method is indicated by marker color. The mean of each of the six dose--method groups is indicated with a cross, colored according to the method.
+The measured odontoblast lengths are shown below as a function of the vitamin C dose. Delivery method is indicated by marker color. The mean of each of the six dose--method groups is indicated with a cross, colored according to the method.
 
 ```{r exploreplot}
 # Determine the mean odontoblast length for each combination of dose
-# and administration method
+# and delivery method
 tgmeans <- group_by(ToothGrowth, supp, dose) %>%
     summarize(len = mean(len)) %>%
     ungroup()
@@ -103,30 +96,30 @@ tgc <- cbind(tgc,
 gt <- ggplot(tgc, aes(x = dose, y = len))
 ```
 ```{r exploreplot2}
-# Color markers by administration methods, choose marker size and type
+# Color markers by delivery methods, choose marker size and type
 # based on whether showing mean or measured data
 gt <- gt + geom_point(aes(color = supp, size = type, shape = type)) + 
     scale_size_manual(values = c("Measured" = 2, "Mean" = 6)) +
     scale_shape_manual(name = "Type", values = c("Measured" = 16, "Mean" = 3)) +
-    scale_color_discrete(name = "Adm. method", breaks = c("OJ", "VC"),
+    scale_color_discrete(name = "Delivery\nmethod", breaks = c("OJ", "VC"),
                          labels = c("Orange juice (OJ)", "Ascorbic acid (VC)")) +
     guides(size = FALSE) +
-    labs(x = "Dose (mg/day)", y = "Odontoblast length (a.u.)", title = "Odontoblast length vs. dose\nand administration method") +
+    labs(x = "Dose (mg/day)", y = "Odontoblast length (a.u.)", title = "Odontoblast length vs. dose\nand delivery method") +
     theme(text = element_text(family = "serif"))
     
 print(gt)
 ```
 
-We observe that the odontoblasts seem to be longer in those gerbils which had larger daily dose of vitamin C. For doses of 0.5 and 1.0 mg/day, also the administration method seems to have an effect, with the orange juice administration being associated with longer odontoblasts.
+We observe that the odontoblasts seem to be longer in those gerbils which had larger daily dose of vitamin C. For doses of 0.5 and 1.0 mg/day, also the delivery method seems to have an effect, with the orange juice being associated with longer odontoblasts.
 
 # Hypothesis testing of the mean odontoblast length
 
-We investigate the differences in the mean lengths of different dose--method groups by using the two-sided *t*-test ($\alpha = 0.05$). In order to control false discovery rate, the p-values are adjusted using the Benjamini--Hochberg method, R function `p.adjust(p, method = "BH")`. Only the dose--method pairs where either the dose or the method are the same are considered, i.e., if both the dose and the administration method differ the difference of the means and the associated p-value is not calculated.
+We investigate the differences in the mean lengths of different dose--method groups by using the two-sided *t*-test ($\alpha = 0.05$). In order to control false discovery rate, the *p* values are adjusted using the Benjamini--Hochberg method, R function `p.adjust(p, method = "BH")`. Only the dose--method pairs where either the dose or the method are the same are considered, i.e., if both the dose and the delivery method differ the difference of the means and the associated *p* value is not calculated.
 
-The differences in the means are given in the table below. Gray cells correspond to pairs which are not considered. Cells with green background indicate that the difference in the means is statistically significant, while red background indicates the converse. The difference of the mean is given first, positive value indicates that the mean of the group named on the same row is larger than the mean of the group named at the top of the column. The number after the semicolon is the (unadjusted) p-value.
+The differences in the means are given in the table below. Gray cells correspond to pairs which are not considered. Cells with green background indicate that the difference in the means is statistically significant, while red background indicates the converse. The difference of the mean is given first, positive value indicates that the mean of the group named on the same row is larger than the mean of the group named at the top of the column. The number after the semicolon is the (unadjusted) *p* value.
 
 ```{r citable}
-# Create a data frame of the possible combinations of administration method
+# Create a data frame of the possible combinations of delivery method
 # and dose, one combination per row
 # The leftmost variable variest fastest, the rightmost slowest
 metxdose <- expand.grid(supp = unique(tgc$supp), dose = unique(tgc$dose))
@@ -152,7 +145,7 @@ idx <- cbind(rowinds, colinds)
 idxl <- lapply(seq_len(nrow(idx)), function(i) as.vector(idx[i,]))
 
 # Remove from consideration the indices which consider to pairs
-# where both the dose and the administration method differ
+# where both the dose and the delivery method differ
 onediffers <- sapply(idxl, function(x) any(metxdose[x[1], ]
                                            == metxdose[x[2], ]))
 idxl <- idxl[onediffers]
@@ -246,7 +239,7 @@ print(xtable(tablecell.str, align = c("r", rep("c", rows-1))),
       sanitize.text.function = identity, size = "small")
 ```
 
-We observe that for both administration methods and all combinations of dose, the difference in the means is statistically significant. Additionally, for daily doses of 0.5 and 1.0 mg, the gerbils to whom the vitamin was administered via orange juice had, on average, longer odontoblast cells than those who were administered ascorbic acid. For the daily dose of 2.0 mg, the difference between the administration methods was not statistically significant.
+We observe that for both delivery methods and all combinations of dose, the difference in the means is statistically significant. Additionally, for daily doses of 0.5 and 1.0 mg, the gerbils to whom the vitamin was delivered via orange juice had, on average, longer odontoblast cells than those who were given ascorbic acid. For the daily dose of 2.0 mg, the difference between the delivery methods was not statistically significant.
 
 # Permutation testing
 
@@ -255,7 +248,7 @@ Nperm <- 10000
 doses <- unique(ToothGrowth$dose)
 ```
 
-Finally, we evaluate the different administration methods via permutation testing at each dose level. For each `r length(doses)` dose levels, the administration method labels are reassigned at random `r Nperm` times, then the difference between the means of the reassigned groups is calculated and compared to the difference in the original data. The fraction of the permutations where the difference of means is greater than the actual sample mean serves as an estimate of the significance of the measured difference.
+Finally, we evaluate the different delivery methods via permutation testing at each dose level. For each `r length(doses)` dose levels, the delivery method labels are reassigned at random `r Nperm` times, then the difference between the means of the reassigned groups is calculated and compared to the difference in the original data. The fraction of the permutations where the difference of means is greater than the actual sample mean serves as an estimate of the significance of the measured difference.
 
 The following table shows the result of the permutation testing. From the previous section our hypothesis is that orange juice (OJ) is associated with higher mean than ascorbic acid (VC), so for each permutation we have subtracted the mean of the data labeled `VC` from the mean of the data assigned the label `OJ`. The observed difference for each dose is given in the column $\hat{\Delta}$. The mean and standard deviation of the differences obtained by permuting the labels are given in the columns $\bar{\Delta}$ and $\sigma$, respectively. The rightmost column $\hat{\Delta} > \bar{\Delta}$ shows the fraction of the permutations which resulted in larger difference of means than present in the original data.
 
@@ -301,11 +294,11 @@ print(xtable(dosetab, digits = c(1, 1, 2, 2, 2, 4)),
       include.rownames = FALSE, sanitize.colnames.function = identity)
 ```
 
-Small values of $\hat{\Delta} > \bar{\Delta}$ indicate that the difference in the means between the administration methods, as in the original data, is statistically significant. We see that for the two smaller doses the difference between the administration methods, is significant, but the largest dose approximately half of the label permutations result in a difference of means larger than in the original data.
+Small values of $\hat{\Delta} > \bar{\Delta}$ indicate that the difference in the means between the delivery methods, as in the original data, is statistically significant. We see that for the two smaller doses the difference between the delivery methods, is significant, but the largest dose approximately half of the label permutations result in a difference of means larger than in the original data.
 
 # Conclusions
 
-We conclude that, according to our analysis, larger doses of vitamin C are associated with longer odontoblasts. For daily doses of 0.5 mg and 1.0 mg, administering the vitamin via orange juice instead of as ascorbic acid is associated higher mean odontoblast length. These results are statistically significant ($\alpha < 0.05$); the Benjamini--Hochberg correction was used to control the false discovery rate. For the largest reported dose, 2.0 mg/day, the difference between the administration methods is not statistically significant. 
+We conclude that, according to our analysis, larger doses of vitamin C are associated with longer odontoblasts. For daily doses of 0.5 mg and 1.0 mg, delivering the vitamin via orange juice instead of as ascorbic acid is associated higher mean odontoblast length. These results are statistically significant ($\alpha < 0.05$); the Benjamini--Hochberg correction was used to control the false discovery rate. For the largest reported dose, 2.0 mg/day, the difference between the delivery methods is not statistically significant. Our conclusions are based on the assumption that the odontoblast length is normally distributed and thus the *t*-test may be used.
 
 # Appendix
 
@@ -313,7 +306,7 @@ This appendix includes the R code used to conduct the simulation experiment and 
 
 ## Source code
 
-The following shows the source code used in the analysis. Due to length constraints, some code sections related strictly to presenting the results have been omitted. Full R Markdown sourcecode is available in GitHub:
+The following shows the source code used in the analysis. Due to length constraints, some code sections related strictly to presenting the results have been omitted. Complete R Markdown sourcecode is available in GitHub,  https://github.com/tvoipio/JHU_SIProject
 
 ```{r ref.label=c("init", "exploreplot"), echo=TRUE, results="hide", fig.show="hide"}
 ```

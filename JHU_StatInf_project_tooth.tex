@@ -1,0 +1,475 @@
+\documentclass[a4paper]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+    \setmainfont{texgyretermes-regular.otf}
+    \setmathfont(Digits,Latin,Greek){texgyretermes-math.otf}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Timo Voipio},
+            pdftitle={Effect of vitamin C on tooth cell growth},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Effect of vitamin C on tooth cell growth}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Timo Voipio}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{14 Aug 2016}
+
+\usepackage{colortbl}
+\usepackage{booktabs}
+
+\setmainfont[
+BoldFont = texgyretermes-bold.otf,
+ItalicFont = texgyretermes-italic.otf,
+BoldItalicFont = texgyretermes-bolditalic.otf
+]{texgyretermes-regular.otf}
+
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\begin{document}
+\maketitle
+
+\section{Overview}\label{overview}
+
+This paper explores the \texttt{ToothGrowth} dataset from the R
+\texttt{datasets} package. Based on the data, we determine that larger
+dosages of vitamin C is associated with longer odontoblasts, and that
+for lower concentrations administering the vitamin via orange juice
+seems to be associated with longer odontoblasts, compared to ascorbic
+acid administration.
+
+\section{Data description}\label{data-description}
+
+The dataset is described in its documentation as follows: ``The Effect
+of Vitamin C on Tooth Growth in Guinea Pigs. The response is the length
+of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs.
+Each animal received one of three dose levels of vitamin C (0.5, 1.0,
+and 2.0 mg/day) by one of two delivery methods, (orange juice or
+ascorbic acid (a form of vitamin C and coded as VC).'' Administration
+via orange juice is coded with ``OJ''. There are ten measurements of the
+response (odontoblast length) for each of the six possible combinations
+of dose and administration method.
+
+\section{Exploratory analysis}\label{exploratory-analysis}
+
+The measured odontoblast lengths are shown below as a function of the
+vitamin C dose. Administration method is indicated by marker color. The
+mean of each of the six dose--method groups is indicated with a cross,
+colored according to the method.
+
+\begin{center}\includegraphics{JHU_StatInf_project_tooth_files/figure-latex/exploreplot2-1} \end{center}
+
+We observe that the odontoblasts seem to be longer in those gerbils
+which had larger daily dose of vitamin C. For doses of 0.5 and 1.0
+mg/day, also the administration method seems to have an effect, with the
+orange juice administration being associated with longer odontoblasts.
+
+\section{Hypothesis testing of the mean odontoblast
+length}\label{hypothesis-testing-of-the-mean-odontoblast-length}
+
+We investigate the differences in the mean lengths of different
+dose--method groups by using the two-sided \emph{t}-test
+(\(\alpha = 0.05\)). In order to control false discovery rate, the
+p-values are adjusted using the Benjamini--Hochberg method, R function
+\texttt{p.adjust(p,\ method\ =\ "BH")}. Only the dose--method pairs
+where either the dose or the method are the same are considered, i.e.,
+if both the dose and the administration method differ the difference of
+the means and the associated p-value is not calculated.
+
+The differences in the means are given in the table below. Gray cells
+correspond to pairs which are not considered. Cells with green
+background indicate that the difference in the means is statistically
+significant, while red background indicates the converse. The difference
+of the mean is given first, positive value indicates that the mean of
+the group named on the same row is larger than the mean of the group
+named at the top of the column. The number after the semicolon is the
+(unadjusted) p-value.
+
+\begin{table}[ht]
+\centering
+\begingroup\small
+\begin{tabular}{rccccc}
+  \toprule
+ & VC 0.5 & OJ 0.5 & VC 1.0 & OJ 1.0 & VC 2.0 \\ 
+  \midrule
+OJ 0.5 & \cellcolor[RGB]{153,255,153}  $5.25$; $6.36 \times 10^{-3}$ & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  \\ 
+  VC 1.0 & \cellcolor[RGB]{153,255,153}  $8.79$; $6.81 \times 10^{-7}$ & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  \\ 
+  OJ 1.0 & \cellcolor[gray]{0.9}  & \cellcolor[RGB]{153,255,153}  $9.47$; $8.78 \times 10^{-5}$ & \cellcolor[RGB]{153,255,153}  $5.93$; $1.04 \times 10^{-3}$ & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  \\ 
+  VC 2.0 & \cellcolor[RGB]{153,255,153} $18.16$; $4.68 \times 10^{-8}$ & \cellcolor[gray]{0.9}  & \cellcolor[RGB]{153,255,153}  $9.37$; $9.16 \times 10^{-5}$ & \cellcolor[gray]{0.9}  & \cellcolor[gray]{0.9}  \\ 
+  OJ 2.0 & \cellcolor[gray]{0.9}  & \cellcolor[RGB]{153,255,153} $12.83$; $1.32 \times 10^{-6}$ & \cellcolor[gray]{0.9}  & \cellcolor[RGB]{153,255,153}  $3.36$; $3.92 \times 10^{-2}$ & \cellcolor[RGB]{255,173,153} $-0.08$; $9.64 \times 10^{-1}$ \\ 
+   \bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+We observe that for both administration methods and all combinations of
+dose, the difference in the means is statistically significant.
+Additionally, for daily doses of 0.5 and 1.0 mg, the gerbils to whom the
+vitamin was administered via orange juice had, on average, longer
+odontoblast cells than those who were administered ascorbic acid. For
+the daily dose of 2.0 mg, the difference between the administration
+methods was not statistically significant.
+
+\section{Permutation testing}\label{permutation-testing}
+
+Finally, we evaluate the different administration methods via
+permutation testing at each dose level. For each 3 dose levels, the
+administration method labels are reassigned at random 10000 times, then
+the difference between the means of the reassigned groups is calculated
+and compared to the difference in the original data. The fraction of the
+permutations where the difference of means is greater than the actual
+sample mean serves as an estimate of the significance of the measured
+difference.
+
+The following table shows the result of the permutation testing. From
+the previous section our hypothesis is that orange juice (OJ) is
+associated with higher mean than ascorbic acid (VC), so for each
+permutation we have subtracted the mean of the data labeled \texttt{VC}
+from the mean of the data assigned the label \texttt{OJ}. The observed
+difference for each dose is given in the column \(\hat{\Delta}\). The
+mean and standard deviation of the differences obtained by permuting the
+labels are given in the columns \(\bar{\Delta}\) and \(\sigma\),
+respectively. The rightmost column \(\hat{\Delta} > \bar{\Delta}\) shows
+the fraction of the permutations which resulted in larger difference of
+means than present in the original data.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \toprule
+Dose & $\hat{\Delta}$ & $\bar{\Delta}$ & $\sigma$ & $\bar{\Delta} > \hat{\Delta}$ \\ 
+  \midrule
+0.5 & 5.25 & 0.01 & 2.01 & 0.0031 \\ 
+  1.0 & 5.93 & 0.01 & 1.97 & 0.0010 \\ 
+  2.0 & -0.08 & 0.03 & 1.70 & 0.5247 \\ 
+   \bottomrule
+\end{tabular}
+\end{table}
+
+Small values of \(\hat{\Delta} > \bar{\Delta}\) indicate that the
+difference in the means between the administration methods, as in the
+original data, is statistically significant. We see that for the two
+smaller doses the difference between the administration methods, is
+significant, but the largest dose approximately half of the label
+permutations result in a difference of means larger than in the original
+data.
+
+\section{Conclusions}\label{conclusions}
+
+We conclude that, according to our analysis, larger doses of vitamin C
+are associated with longer odontoblasts. For daily doses of 0.5 mg and
+1.0 mg, administering the vitamin via orange juice instead of as
+ascorbic acid is associated higher mean odontoblast length. These
+results are statistically significant (\(\alpha < 0.05\)); the
+Benjamini--Hochberg correction was used to control the false discovery
+rate. For the largest reported dose, 2.0 mg/day, the difference between
+the administration methods is not statistically significant. Our
+conclusions are based on the assumption that the odontoblast length is
+normally distributed and thus the \emph{t}-test may be used.
+
+\section{Appendix}\label{appendix}
+
+This appendix includes the R code used to conduct the simulation
+experiment and to format the results. The simulation was performed using
+R version 3.2.3 (2015-12-10) on OS X 10.10.5 (Yosemite)
+{[}x86\_64-apple-darwin13.4.0 (64-bit){]}.
+
+\subsection{Source code}\label{source-code}
+
+The following shows the source code used in the analysis. Due to length
+constraints, some code sections related strictly to presenting the
+results have been omitted. Complete R Markdown sourcecode is available
+in GitHub, \url{https://github.com/tvoipio/JHU_SIProject}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(datasets)}
+\KeywordTok{library}\NormalTok{(xtable)}
+
+\CommentTok{# Temporarily disable warnings while dplyr is loaded}
+\NormalTok{oldw <-}\StringTok{ }\KeywordTok{getOption}\NormalTok{(}\StringTok{"warn"}\NormalTok{)}
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{warn =} \NormalTok{-}\DecValTok{1}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{warn =} \NormalTok{oldw)}
+
+\KeywordTok{data}\NormalTok{(}\StringTok{"ToothGrowth"}\NormalTok{)}
+\CommentTok{#tg <- ToothGrowth[, c("len", "supp", "dose")]}
+
+\CommentTok{# Set random seed for repeatability}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{160808}\NormalTok{)}
+\CommentTok{# Determine the mean odontoblast length for each combination of dose}
+\CommentTok{# and administration method}
+\NormalTok{tgmeans <-}\StringTok{ }\KeywordTok{group_by}\NormalTok{(ToothGrowth, supp, dose) %>%}
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{len =} \KeywordTok{mean}\NormalTok{(len)) %>%}
+\StringTok{    }\KeywordTok{ungroup}\NormalTok{()}
+\CommentTok{# Ensure that the columns of tgmeans are in the same order as in tg}
+\NormalTok{tgmeans <-}\StringTok{ }\NormalTok{tgmeans[, }\KeywordTok{names}\NormalTok{(ToothGrowth)]}
+
+\CommentTok{# Combine the measurement results and the computed means for plotting}
+\NormalTok{tgc <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(ToothGrowth, tgmeans)}
+
+\CommentTok{# Add a factor variable to indicate whether the row is measured data}
+\CommentTok{# or a mean}
+\NormalTok{tgc <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(tgc,}
+             \DataTypeTok{type =} \KeywordTok{factor}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"Measured"}\NormalTok{, }\DataTypeTok{times =} \KeywordTok{nrow}\NormalTok{(ToothGrowth)),}
+                             \KeywordTok{rep}\NormalTok{(}\StringTok{"Mean"}\NormalTok{, }\DataTypeTok{times =} \KeywordTok{nrow}\NormalTok{(tgmeans)))))}
+
+\CommentTok{# Prepare a plot of length vs dose using ggplot2}
+\NormalTok{gt <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(tgc, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{dose, }\DataTypeTok{y =} \NormalTok{len))}
+\end{Highlighting}
+\end{Shaded}
+
+(code block omitted)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Create a data frame of the possible combinations of administration method}
+\CommentTok{# and dose, one combination per row}
+\CommentTok{# The leftmost variable variest fastest, the rightmost slowest}
+\NormalTok{metxdose <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}\DataTypeTok{supp =} \KeywordTok{unique}\NormalTok{(tgc$supp), }\DataTypeTok{dose =} \KeywordTok{unique}\NormalTok{(tgc$dose))}
+
+\CommentTok{# Set the significance level}
+\NormalTok{signif.level <-}\StringTok{ }\FloatTok{0.05}
+
+\CommentTok{# Choose the p value adjustment method to control the false discovery}
+\CommentTok{# rate (using p.adjust())}
+\CommentTok{#adj.method <- "bonferroni"}
+\NormalTok{adj.method <-}\StringTok{ "BH"}
+
+\CommentTok{# Indices of the elements of a lower triangular matrix (main diagonal omitted)}
+\CommentTok{# Thanks to: http://stackoverflow.com/a/20898910}
+\CommentTok{# We want to consider each dose--method pair only once}
+\NormalTok{rows <-}\StringTok{ }\KeywordTok{nrow}\NormalTok{(metxdose)}
+\NormalTok{rowinds <-}\StringTok{ }\KeywordTok{rev}\NormalTok{(}\KeywordTok{abs}\NormalTok{(}\KeywordTok{sequence}\NormalTok{(}\KeywordTok{seq.int}\NormalTok{(rows -}\StringTok{ }\DecValTok{1}\NormalTok{)) -}\StringTok{ }\NormalTok{rows) +}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{colinds <-}\StringTok{ }\KeywordTok{rep.int}\NormalTok{(}\KeywordTok{seq.int}\NormalTok{(rows -}\StringTok{ }\DecValTok{1}\NormalTok{), }\KeywordTok{rev}\NormalTok{(}\KeywordTok{seq.int}\NormalTok{(rows -}\StringTok{ }\DecValTok{1}\NormalTok{)))}
+\NormalTok{idx <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(rowinds, colinds)}
+
+\CommentTok{# Form a list of the index pairs; each element of the list identifies}
+\CommentTok{# a dose-method combination, i.e., a row in metxdose}
+\NormalTok{idxl <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\KeywordTok{seq_len}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(idx)), function(i) }\KeywordTok{as.vector}\NormalTok{(idx[i,]))}
+
+\CommentTok{# Remove from consideration the indices which consider to pairs}
+\CommentTok{# where both the dose and the administration method differ}
+\NormalTok{onediffers <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(idxl, function(x) }\KeywordTok{any}\NormalTok{(metxdose[x[}\DecValTok{1}\NormalTok{], ]}
+                                           \NormalTok{==}\StringTok{ }\NormalTok{metxdose[x[}\DecValTok{2}\NormalTok{], ]))}
+\NormalTok{idxl <-}\StringTok{ }\NormalTok{idxl[onediffers]}
+
+\CommentTok{# Function to calculate the two-sided t-test between the identified}
+\CommentTok{# pair of dose-method combinations. The calculated difference is}
+\CommentTok{# data.r-data.c, where data.c is the combination corresponding to the}
+\CommentTok{# index on the column in the metxdose matrix and data.r corresponds to}
+\CommentTok{# the row.}
+\NormalTok{calculate_stat <-}\StringTok{ }\NormalTok{function(l)}
+\NormalTok{\{}
+    \NormalTok{data.r <-}\StringTok{ }\NormalTok{ToothGrowth[ToothGrowth$supp ==}\StringTok{ }\NormalTok{metxdose[l[}\DecValTok{1}\NormalTok{], }\StringTok{"supp"}\NormalTok{] &}
+\StringTok{                  }\NormalTok{ToothGrowth$dose ==}\StringTok{ }\NormalTok{metxdose[l[}\DecValTok{1}\NormalTok{], }\StringTok{"dose"}\NormalTok{], }\StringTok{"len"}\NormalTok{]}
+    \NormalTok{data.c <-}\StringTok{ }\NormalTok{ToothGrowth[ToothGrowth$supp ==}\StringTok{ }\NormalTok{metxdose[l[}\DecValTok{2}\NormalTok{], }\StringTok{"supp"}\NormalTok{] &}
+\StringTok{                  }\NormalTok{ToothGrowth$dose ==}\StringTok{ }\NormalTok{metxdose[l[}\DecValTok{2}\NormalTok{], }\StringTok{"dose"}\NormalTok{], }\StringTok{"len"}\NormalTok{]}
+    \KeywordTok{t.test}\NormalTok{(data.r, data.c, }\DataTypeTok{paired =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{var.equal =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{\}}
+
+\CommentTok{# Perform the t tests for each element in idxl, and for convenience}
+\CommentTok{# separate the p values of the calculated differences of means}
+\CommentTok{# and the differences themselves into separate vectors}
+\NormalTok{t.test.results <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(idxl, calculate_stat)}
+\NormalTok{p.values <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(t.test.results, function(res) res$p.value)}
+\NormalTok{meandeltas <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(t.test.results, function(res) -}\KeywordTok{diff}\NormalTok{(res$estimate))}
+\KeywordTok{names}\NormalTok{(meandeltas) <-}\StringTok{ }\OtherTok{NULL}
+
+\CommentTok{# Calculate the adjusted p values}
+\NormalTok{p.adj.values <-}\StringTok{ }\KeywordTok{p.adjust}\NormalTok{(p.values, }\DataTypeTok{method =} \NormalTok{adj.method)}
+
+\CommentTok{# Create descriptive yet concise row and column names for use in the }
+\CommentTok{# result matrix}
+\NormalTok{rowcolnames <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(metxdose, }\DecValTok{1}\NormalTok{, paste, }\DataTypeTok{collapse =} \StringTok{" "}\NormalTok{)}
+
+\CommentTok{# Construct empty matrices into which the calculated p values, adjusted}
+\CommentTok{# p values, mean deltas and whether the result is significant or not are placed}
+\CommentTok{# Since the matrix data is given as a 0-length vector, they are filled}
+\CommentTok{# with NAs.}
+\NormalTok{p.values.mat <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{numeric}\NormalTok{(), }\DataTypeTok{nrow =} \NormalTok{rows, }\DataTypeTok{ncol =} \NormalTok{rows,}
+                       \DataTypeTok{dimnames =} \KeywordTok{list}\NormalTok{(rowcolnames, rowcolnames))}
+\NormalTok{p.adj.values.mat <-}\StringTok{ }\NormalTok{p.values.mat}
+\NormalTok{meandeltas.mat <-}\StringTok{ }\NormalTok{p.values.mat}
+\NormalTok{p.signif.mat <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{logical}\NormalTok{(), }\DataTypeTok{nrow =} \NormalTok{rows, }\DataTypeTok{ncol =} \NormalTok{rows,}
+                       \DataTypeTok{dimnames =} \KeywordTok{list}\NormalTok{(rowcolnames, rowcolnames))}
+
+\CommentTok{# Populate the matrices created above}
+\NormalTok{for (i in }\KeywordTok{seq_along}\NormalTok{(idxl))}
+\NormalTok{\{}
+    \NormalTok{row <-}\StringTok{ }\NormalTok{idxl[[i]][}\DecValTok{1}\NormalTok{]}
+    \NormalTok{col <-}\StringTok{ }\NormalTok{idxl[[i]][}\DecValTok{2}\NormalTok{]}
+    \NormalTok{p.values.mat[row, col] <-}\StringTok{ }\NormalTok{p.values[i]}
+    \NormalTok{p.adj.values.mat[row, col] <-}\StringTok{ }\NormalTok{p.adj.values[i]}
+    \NormalTok{meandeltas.mat[row, col] <-}\StringTok{ }\NormalTok{meandeltas[i]}
+    \NormalTok{p.signif.mat[row, col] <-}\StringTok{ }\NormalTok{p.adj.values[i] <}\StringTok{ }\NormalTok{signif.level}
+\NormalTok{\}}
+\KeywordTok{rm}\NormalTok{(row, col)}
+\end{Highlighting}
+\end{Shaded}
+
+(code block omitted)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Nperm <-}\StringTok{ }\DecValTok{10000}
+\NormalTok{doses <-}\StringTok{ }\KeywordTok{unique}\NormalTok{(ToothGrowth$dose)}
+\CommentTok{# Create a data frame for storing the results of the permutation tests}
+\NormalTok{perms <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\KeywordTok{numeric}\NormalTok{(Nperm*}\KeywordTok{length}\NormalTok{(doses)*}\DecValTok{2}\NormalTok{), }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{))}
+\KeywordTok{names}\NormalTok{(perms) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"deltamean"}\NormalTok{, }\StringTok{"dose"}\NormalTok{)}
+\NormalTok{perms[, }\StringTok{"greater"}\NormalTok{] <-}\StringTok{ }\KeywordTok{logical}\NormalTok{()}
+
+\NormalTok{testStat <-}\StringTok{ }\NormalTok{function(x, suppgrp)}
+\NormalTok{\{}
+    \KeywordTok{mean}\NormalTok{(x[suppgrp ==}\StringTok{ "OJ"}\NormalTok{, }\StringTok{"len"}\NormalTok{]) -}\StringTok{ }\KeywordTok{mean}\NormalTok{(x[suppgrp ==}\StringTok{ "VC"}\NormalTok{, }\StringTok{"len"}\NormalTok{])}
+\NormalTok{\}}
+
+\NormalTok{obsdeltas <-}\StringTok{ }\KeywordTok{numeric}\NormalTok{(}\DecValTok{3}\NormalTok{)}
+    
+\NormalTok{for (i in }\KeywordTok{seq_along}\NormalTok{(doses))}
+\NormalTok{\{}
+    \NormalTok{dosei <-}\StringTok{ }\NormalTok{doses[i]}
+    \NormalTok{tgdose <-}\StringTok{ }\KeywordTok{subset}\NormalTok{(ToothGrowth, dose ==}\StringTok{ }\NormalTok{dosei)}
+
+    \NormalTok{obsdeltas[i] <-}\StringTok{ }\KeywordTok{testStat}\NormalTok{(tgdose, tgdose$supp)}
+    
+    \NormalTok{offset <-}\StringTok{ }\NormalTok{(i}\DecValTok{-1}\NormalTok{)*Nperm}
+    \NormalTok{perms[(offset +}\StringTok{ }\DecValTok{1}\NormalTok{:Nperm), }\StringTok{"deltamean"}\NormalTok{] <-}
+\StringTok{        }\KeywordTok{sapply}\NormalTok{(}\KeywordTok{seq}\NormalTok{(Nperm), function(x) }\KeywordTok{testStat}\NormalTok{(tgdose, }\KeywordTok{sample}\NormalTok{(tgdose$supp)))}
+    \NormalTok{perms[(offset +}\StringTok{ }\DecValTok{1}\NormalTok{:Nperm), }\StringTok{"dose"}\NormalTok{] <-}\StringTok{ }\NormalTok{dosei}
+    \NormalTok{perms[(offset +}\StringTok{ }\DecValTok{1}\NormalTok{:Nperm), }\StringTok{"greater"}\NormalTok{] <-}
+\StringTok{        }\NormalTok{perms[(offset +}\StringTok{ }\DecValTok{1}\NormalTok{:Nperm), }\StringTok{"deltamean"}\NormalTok{] >}\StringTok{ }\NormalTok{obsdeltas[i]}
+\NormalTok{\}}
+
+\NormalTok{dosetab <-}\StringTok{ }\NormalTok{perms %>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(dose) %>%}
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{meandelta =} \KeywordTok{mean}\NormalTok{(deltamean), }\DataTypeTok{sddelta =} \KeywordTok{sd}\NormalTok{(deltamean),}
+              \DataTypeTok{greater =} \KeywordTok{mean}\NormalTok{(greater))}
+\NormalTok{dosetab <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(dosetab, }\DataTypeTok{obsdelta =} \NormalTok{obsdeltas)}
+\NormalTok{dosetab <-}\StringTok{ }\KeywordTok{select}\NormalTok{(dosetab, dose, obsdelta, }\KeywordTok{everything}\NormalTok{())}
+\KeywordTok{names}\NormalTok{(dosetab) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Dose"}\NormalTok{, }\StringTok{"$}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{hat\{}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{Delta\}$"}\NormalTok{, }\StringTok{"$}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{bar\{}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{Delta\}$"}\NormalTok{,}
+                    \StringTok{"$}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{sigma$"}\NormalTok{, }\StringTok{"$}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{bar\{}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{Delta\} > }\CharTok{\textbackslash{}\textbackslash{}}\StringTok{hat\{}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{Delta\}$"}\NormalTok{)}
+\KeywordTok{print}\NormalTok{(}\KeywordTok{xtable}\NormalTok{(dosetab, }\DataTypeTok{digits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{4}\NormalTok{)),}
+      \DataTypeTok{include.rownames =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{sanitize.colnames.function =} \NormalTok{identity)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{document}

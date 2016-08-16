@@ -1,0 +1,381 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+    \setmainfont{texgyretermes-regular.otf}
+    \setmathfont(Digits,Latin,Greek){texgyretermes-math.otf}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Timo Voipio},
+            pdftitle={Simulated distribution of the mean of exponentially distributed random variables},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Simulated distribution of the mean of exponentially distributed random
+variables}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Timo Voipio}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \predate{\centering\large\emph}
+  \postdate{\par}
+  \date{11 Aug 2016}
+
+
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\begin{document}
+\maketitle
+
+\section{Overview}\label{overview}
+
+This document explores the distribution of the mean of 40 exponentially
+distributed independent random variables via computer simulation. The
+empirically determined distribution is found to be in good agreement
+with the central limit theorem.
+
+\section{Simulation of the mean}\label{simulation-of-the-mean}
+
+We investigate the distribution of the random variable
+\(\bar{X} = \sum_{i=1}^{40} Y_i\), where \(Y_i\) are \emph{iid},
+exponentially distributed random variables with the parameter
+\(\lambda = 0.2\). The simulation is carried out by drawing \(40000\)
+numbers from an exponential distribution with \(\text{rate} = \lambda\),
+grouping these into 1000 groups of 40 each, and calculating the
+arithmetic mean for each group.
+
+\section{Simulation results}\label{simulation-results}
+
+The distribution of the averages obtained from the simulation is shown
+in the following figure.
+
+\begin{center}\includegraphics{JHU_StatInf_project_simulation_files/figure-latex/distfig-1} \end{center}
+
+The vertical bars show the (density) histogram of the distribution of
+\(\bar{X}\), and the black curve shows the density. The black vertical
+line indicates the mean of \(\bar{X}\), i.e., the empirical mean. The
+red dashed curve shows the (theoretical) distribution of \(\bar{X}\),
+while the dashed vertical line presents the population mean of
+\(\bar{X}\).
+
+\subsection{Mean of averages}\label{mean-of-averages}
+
+The sample mean of \(\bar{X}\) is found to be 5.033. Due to the
+linearity of the expectation value, the expected value of \(\bar{X}\) is
+equal to the expected value of an exponentially distributed random
+variable with rate parameter \(\lambda\), i.e.
+\(1/\lambda = 1/0.2 = 5\). The empirical mean deviates less than 1 \%
+from the theoretical prediction.
+
+\subsection{Variance and distribution of
+averages}\label{variance-and-distribution-of-averages}
+
+The sample variance of \(\bar{X}\) is 0.654. The central limit theorem
+(CLT) predicts that, for sufficiently large \(n\), the average of \(n\)
+\emph{iid} random variables has the variance \(\sigma^2/n\), where
+\(\sigma^2\) is the variance of the distrubution which the random
+variables follow. In the case of the exponential distribution,
+\(\sigma^2 = 1/\lambda^2\), and therefore the CLT predicts that the
+variance of \(\bar{X}\) is
+\(1/\lambda^2 n = 1/(0.2^2 \times 40) = 0.625\). The empirical result
+agrees very well with the prediction given by CLT, so it seems that, at
+least in this case, \(n = 40\) is large enough for the central limit
+theorem to be applicable.
+
+\subsection{Distribution of sample
+means}\label{distribution-of-sample-means}
+
+The central limit theorem predicts that the mean of a large number of
+\emph{iid} random variables follows the normal distribution. In the
+figure above, the dashed red curve indicates the probability density of
+random variables following the distribution \(N(5, 25/40)\). This
+distrubution is the one predicted by CLT for the mean of \(n = 40\)
+\emph{iid} random variables with the mean of \(1/\lambda = 5\) and
+variance of \(1/\lambda^2 = 25\). Compared to the empirically determined
+probability density, we see that the theoretical prediction works quite
+well. The number of simulations used is not very large, so there is
+bound to be some Monte Carlo ``air'' in the result. The appendix
+presents and discusses the results of a comparable simulation conducted
+with a significantly larger sample size.
+
+\section{Conclusions}\label{conclusions}
+
+We determined empirically the distribution of the average of 40
+\emph{iid}, exponentially distributed random variables. The resulting
+distribution and its mean and variance was compared to the normal
+distribution predicted by the central limit theorem (CLT). The empirical
+results agreed very well with the prediction given by CLT, and we
+conclude that, at least in this particular case, 40 may be considered to
+be a ``large'' number.
+
+\section{Appendix}\label{appendix}
+
+This appendix includes the R code used to conduct the simulation
+experiment and to format the results. The simulation was performed using
+R version 3.2.3 (2015-12-10) on OS X 10.10.5 (Yosemite)
+{[}x86\_64-apple-darwin13.4.0 (64-bit){]}.
+
+\subsection{Source code}\label{source-code}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{# Set random seed for repeatability}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{160808}\NormalTok{)}
+\NormalTok{Nmean <-}\StringTok{ }\DecValTok{40}
+\NormalTok{Nsim <-}\StringTok{ }\DecValTok{1000}
+\NormalTok{rate <-}\StringTok{ }\FloatTok{0.2}
+
+\CommentTok{# Generate the requisite amount of random numbers from the exponential}
+\CommentTok{# distribution, wrape them into a Nsim x Nmean matrix, calculate}
+\CommentTok{# row means}
+\NormalTok{expmeans <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rexp}\NormalTok{(Nmean*Nsim, }\DataTypeTok{rate=}\NormalTok{rate), }\DataTypeTok{nrow=}\NormalTok{Nsim),}
+                  \DecValTok{1}\NormalTok{, mean)}
+\CommentTok{# Sample mean of Xbar}
+\NormalTok{samplemeanavg <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expmeans)}
+\CommentTok{# Population mean of Xbar}
+\NormalTok{popmeanavg <-}\StringTok{ }\DecValTok{1}\NormalTok{/rate}
+
+\CommentTok{# Sample variance of Xbar}
+\NormalTok{samplevaravg <-}\StringTok{ }\KeywordTok{var}\NormalTok{(expmeans)}
+\CommentTok{# Population variance of Xbar}
+\NormalTok{popvaravg <-}\StringTok{ }\NormalTok{(}\DecValTok{1}\NormalTok{/rate^}\DecValTok{2}\NormalTok{)/Nmean}
+
+\CommentTok{# A function for constructing a histogram+density plot of the}
+\CommentTok{# simulated averages, along with the CLT prediction.}
+\CommentTok{# (Placing the code inside a function enables reuse in the Appendix)}
+\NormalTok{meandistplot <-}\StringTok{ }\NormalTok{function(means, popmean, popvar, samplemean)}
+\NormalTok{\{}
+    \CommentTok{# Calculate suitable bin widths}
+    \NormalTok{binwidth <-}\StringTok{ }\KeywordTok{ceiling}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(popvar)*}\DecValTok{2}\NormalTok{)/}\DecValTok{10}
+    \CommentTok{# Shift the bin origin such that integers values coincide with}
+    \CommentTok{# bin centers}
+    \NormalTok{binorigin <-}\StringTok{ }\NormalTok{binwidth*}\KeywordTok{floor}\NormalTok{(}\KeywordTok{min}\NormalTok{(means)/binwidth)-binwidth/}\DecValTok{2}
+    \CommentTok{# Calculate the limits of the x axis such that at least 3}
+    \CommentTok{# standard deviations (of the CLT normal distribution)}
+    \CommentTok{# are included; mean predicted by the CLT is at the center of}
+    \CommentTok{# the x axis}
+    \NormalTok{xlims <-}\StringTok{ }\KeywordTok{ceiling}\NormalTok{(}\DecValTok{3}\NormalTok{*}\KeywordTok{sqrt}\NormalTok{(popvar))*}\KeywordTok{c}\NormalTok{(-}\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{) +}\StringTok{ }\NormalTok{popmean}
+    
+    \CommentTok{# Construct the plot using ggplot2}
+    \NormalTok{g <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{expmean =} \NormalTok{means), }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{expmean))}
+    
+    \CommentTok{# Histogram and density of the simulated data}
+    \NormalTok{ghist <-}\StringTok{ }\NormalTok{g +}\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =} \NormalTok{..density..),}
+                                \DataTypeTok{binwidth =} \NormalTok{binwidth, }\DataTypeTok{origin =} \NormalTok{binorigin) +}
+\StringTok{        }\KeywordTok{geom_density}\NormalTok{() +}
+\StringTok{        }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =} \KeywordTok{mean}\NormalTok{(means), }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{) +}
+\StringTok{        }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{expression}\NormalTok{(}\KeywordTok{bar}\NormalTok{(X)),}
+             \DataTypeTok{title =} \StringTok{"Distribution of simulated means"}\NormalTok{) +}
+\StringTok{        }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks =} \KeywordTok{seq}\NormalTok{(xlims[}\DecValTok{1}\NormalTok{], xlims[}\DecValTok{2}\NormalTok{]),}
+                           \DataTypeTok{limits =} \NormalTok{xlims) +}
+\StringTok{        }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{text =} \KeywordTok{element_text}\NormalTok{(}\DataTypeTok{family =} \StringTok{"serif"}\NormalTok{))}
+    
+    \CommentTok{# Determine the shape of the distribution of Xbar predicted by}
+    \CommentTok{# CLT}
+    \NormalTok{densx <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(xlims[}\DecValTok{1}\NormalTok{], xlims[}\DecValTok{2}\NormalTok{], }\DataTypeTok{length.out =} \DecValTok{101}\NormalTok{)}
+    \NormalTok{densy <-}\StringTok{ }\KeywordTok{dnorm}\NormalTok{(densx, }\DataTypeTok{mean =} \NormalTok{popmean, }\DataTypeTok{sd =} \KeywordTok{sqrt}\NormalTok{(popvar))}
+    \NormalTok{densdata <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{densx =} \NormalTok{densx, }\DataTypeTok{densy =} \NormalTok{densy)}
+    
+    \CommentTok{# Add the mean and density predicted by CLT to the plot}
+    \NormalTok{gcomp <-}\StringTok{ }\NormalTok{ghist +}\StringTok{ }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =} \NormalTok{densx, }\DataTypeTok{y =} \NormalTok{densy), }\DataTypeTok{data =} \NormalTok{densdata,}
+                               \DataTypeTok{color =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{lty =} \StringTok{"dashed"}\NormalTok{) +}
+\StringTok{        }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =} \NormalTok{popmean, }\DataTypeTok{color =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{lty =} \StringTok{"dashed"}\NormalTok{)}
+    
+    \KeywordTok{return}\NormalTok{(gcomp)}
+\NormalTok{\}}
+
+\CommentTok{# tidyprint suppresses warnings issued by ggplot2 in the case a bin}
+\CommentTok{# does not contain any values; this may happen since the limits have}
+\CommentTok{# been set manually}
+\CommentTok{# (further simulation with Nsim = 1e6 predicts that, for lambda used}
+\CommentTok{# here, the 1/1000th quantile is at approximately 2.9; for Nsim = 1000,}
+\CommentTok{# it is thus rather improbable that all of the bins 2.1-2.3, 2.3-2.5,}
+\CommentTok{# 2.5-2.7, 2.5-2.9 would contain at least one observation)}
+\NormalTok{tidyprint <-}\StringTok{ }\NormalTok{function(obj, tidy)}
+\NormalTok{\{}
+    \CommentTok{# If tidy output is desired, disable warnings (caused by xlim}
+    \CommentTok{# containing bins with no values falling in them)}
+    \NormalTok{if (tidy)}
+    \NormalTok{\{}
+        \NormalTok{oldw <-}\StringTok{ }\KeywordTok{getOption}\NormalTok{(}\StringTok{"warn"}\NormalTok{)}
+        \KeywordTok{options}\NormalTok{(}\DataTypeTok{warn =} \NormalTok{-}\DecValTok{1}\NormalTok{)}
+    \NormalTok{\}}
+    
+    \CommentTok{# Print the object using the default print method}
+    \KeywordTok{print}\NormalTok{(obj)}
+    
+    \CommentTok{# Restore previous state of warnings}
+    \NormalTok{if(tidy) \{ }\KeywordTok{options}\NormalTok{(}\DataTypeTok{warn =} \NormalTok{oldw) \}}
+\NormalTok{\}}
+
+\CommentTok{# Construct and print a plot of the simulated averages along}
+\CommentTok{# with the CLT prediction}
+\KeywordTok{tidyprint}\NormalTok{(}\KeywordTok{meandistplot}\NormalTok{(expmeans, popmeanavg, popvaravg, samplemeanavg),}
+          \NormalTok{tidydoc)}
+\end{Highlighting}
+\end{Shaded}
+
+The complete R Markdown source file may be found at
+\url{https://github.com/tvoipio/JHU_SIProject}
+
+\subsection{\texorpdfstring{Simulation using
+\(n = 1000000\)}{Simulation using n = 1000000}}\label{simulation-using-n-1000000}
+
+Out of interest (and because computing is cheap), it was decided to
+carry out the simulation of the average of 40 \emph{iid} exponentially
+distributed random variables using a million simulations, instead of one
+thousand.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Nsim2 <-}\StringTok{ }\FloatTok{1e6}
+\NormalTok{expmeans2 <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\KeywordTok{rexp}\NormalTok{(Nmean*Nsim2, }\DataTypeTok{rate=}\NormalTok{rate), }\DataTypeTok{nrow=}\NormalTok{Nsim2),}
+                   \DecValTok{1}\NormalTok{, mean)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Calculate sample mean and sample variance of the averages calculated}
+\CommentTok{# using Nsim2 simulations and print the resulting distribution}
+\NormalTok{samplemeanavg2 <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(expmeans2)}
+\NormalTok{samplevaravg2 <-}\StringTok{ }\KeywordTok{var}\NormalTok{(expmeans2)}
+\KeywordTok{tidyprint}\NormalTok{(}\KeywordTok{meandistplot}\NormalTok{(expmeans2, popmeanavg, popvaravg, samplemeanavg2),}
+          \NormalTok{tidydoc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{JHU_StatInf_project_simulation_files/figure-latex/unnamed-chunk-4-1} \end{center}
+
+The sample mean of the 1000000 simulated averages is 4.999539 (CLT
+prediction 5.00000), and the sample variance is 0.6254257 (CLT
+prediction 0.62500). We observe that, by increasing the number of
+simulations the sample mean is, for most practical purposes, exactly the
+same the as the prediction given by the linearity of the expected value.
+The variance is also closer to the CLT prediction than the one obtained
+with 1000 simulations (0.6541418), but not as close as in the case of
+the mean. It should be kept in mind that the CLT is exact only as \(n\)
+approaches infinity; in our case, \(n = 40\), so it is not surprising
+that the predicted and empirically determined variances differ.
+
+The shape of the distribution obtained with 1000000 simulations is also
+clearly not normal; the distribution is positively skewed, the lower
+tail is thinner than normal, and the upper tail is fatter than normal.
+Determining the exact distribution, while possibly an interesting
+exercise, is way, way outside the scope of this project.
+
+\end{document}
